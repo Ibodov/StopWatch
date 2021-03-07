@@ -1,5 +1,6 @@
 package com.example.stopwatch;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,12 +12,46 @@ public class StopWatchActivity extends AppCompatActivity {
 
     private int seconds = 0; //хранится кол. прошедших секунд
     private boolean running;
+    private boolean wasRunning; //переменная для хранения инфо о том, работал ли
+                                // секундмер перед вызовом метода onStop()
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stopwatch);
-        runTimer(); //для обнов. секундомера используется отдельный метод. запускается при создании активити
+        //runTimer(); //для обнов. секундомера используется отдельный метод. запускается при создании активити
+        if (savedInstanceState != null) {
+            seconds = savedInstanceState.getInt("seconds");
+            running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning"); // Восстанавливаем состаяное
+                                // переменной wasRunning, если активность создается заново.
+        }
+        runTimer();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning); //Сохранить перменной
+    }
+
+
+    //Реализация остановки секундомера в onStop
+    @Override
+    protected void onStop() {
+        super.onStop();
+        wasRunning = running; //Сохранить информацию о том, работал ли секундомер на момент вызова метода onStop()
+        running = false;
+    }
+
+    @Override
+    protected void onStart() { //Реализация метода onStart(). Если секундомер работал, то отсчет вренмени возобнавляется.
+        super.onStart();
+        if(wasRunning) {
+            running = true;
+        }
     }
 
     public void onClickStart(View view) { //вызывается при нажатии кнопки старт
