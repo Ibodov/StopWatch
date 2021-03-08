@@ -39,12 +39,21 @@ public class StopWatchActivity extends AppCompatActivity {
 
 
     //Реализация остановки секундомера в onStop
+/*
     @Override
     protected void onStop() {
         super.onStop();
         wasRunning = running; //Сохранить информацию о том, работал ли секундомер на момент вызова метода onStop()
         running = false;
     }
+*/
+
+@Override
+    protected void onPause() {
+    super.onPause();
+    wasRunning = running; //Сохранить информацию о том, работал ли секундомер на момент вызова метода onStop()
+    running = false;
+}
 
     @Override
     protected void onStart() { //Реализация метода onStart(). Если секундомер работал, то отсчет вренмени возобнавляется.
@@ -54,6 +63,14 @@ public class StopWatchActivity extends AppCompatActivity {
         }
     }
 
+/*
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(wasRunning) {
+            running = true;
+    }
+*/
     public void onClickStart(View view) { //вызывается при нажатии кнопки старт
         running = true; //запустить секундомер
     }
